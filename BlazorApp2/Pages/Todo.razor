@@ -1,0 +1,110 @@
+﻿@page "/todo"
+@inject IJSRuntime JsRuntime;
+
+
+<h3>Todo</h3>
+
+<ul>
+    @foreach (var item in todos)
+    {
+        <li>
+            <span>@item.Title</span>
+            <span>@item.No</span>
+
+            <!--클릭하면 DeleteItem() 호출-->
+            <a href="javascript:;" @onclick="@((args)=>DeleteItem(args, item))">삭제</a>
+        </li>
+    }
+
+</ul>
+
+
+<!--
+    @ref :이 element 참고하는 값
+    @bind : 참고 https://docs.microsoft.com/ko-kr/aspnet/core/blazor/components/data-binding?view=aspnetcore-3.1
+    @onkeyup : 마우스 왼쪽 키 업
+    -->
+<input placeholder="Something todo" @ref="inpTodo" @bind="newTodo" @onkeyup="keyup" />
+<button @onclick="AddTodo">Add todo</button>
+
+@code {
+    //다른 페이지 갔다와도 값 유지하기 위해 static사용
+    private static IList<TodoItem> todos = new List<TodoItem>();
+    private string newTodo;
+    private static int no = 0;
+    //input element 참고 변수
+    private ElementReference inpTodo;
+
+
+    /// <summary>
+    /// 이 페이지 렌더링 후 호출됨
+    /// </summary>
+    /// <param name="firstRender">첫번째 렌더링인지 여부</param>
+    /// <returns></returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //다른 페이지에서 이 페이지로 들어온 처음이면 true. 이 페이지에서 렌더링이 계속된거면 false
+        if (firstRender)
+        {
+            //js함수 호출
+            await JsRuntime.InvokeVoidAsync("setFocus", inpTodo);
+        }
+    }
+
+
+    /// <summary>
+    /// todo item 추가
+    /// </summary>
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todos.Add(new TodoItem { No = no++, Title = newTodo });
+            newTodo = string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// input element에서 keyup
+    /// </summary>
+    /// <param name="e"></param>
+    private void keyup(KeyboardEventArgs e)
+    {
+        if ("Enter".Equals(e.Code))
+        {
+            AddTodo();
+        }
+    }
+
+
+    /// <summary>
+    /// item 삭제
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="item"></param>
+    private async void DeleteItem(MouseEventArgs e, TodoItem item)
+    {
+        //js 함수 호출
+        bool b = await JsRuntime.InvokeAsync<bool>("confirm", "삭제하시겠습니까?");
+        
+        //디버깅 메시지
+        System.Diagnostics.Debug.WriteLine(item);
+
+
+        todos.Remove(item);
+
+
+        //값이 변경되었으니 화면 다시 렌더링시키기
+        StateHasChanged();
+
+    }
+
+
+
+    public class TodoItem
+    {
+        public int No { get; set; }
+        public string Title { get; set; }
+        public bool IsDone { get; set; }
+    }
+}
