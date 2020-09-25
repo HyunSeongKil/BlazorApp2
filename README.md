@@ -1,4 +1,4 @@
-# 
+# Blazor WebAssembly
 
 ## 공통
 	- js는 정적페이지(html)에 위치해야 함
@@ -14,6 +14,13 @@
 	- 값 유지
 	- re-render
 	- js를 이용한 autofocus (js없이 처리하는 방법을 모르겠음 ㅠ)
+
+## RequestData 페이지
+### api 호출 기능
+    - 참고 : https://docs.microsoft.com/ko-kr/aspnet/core/blazor/call-web-api?view=aspnetcore-3.1
+    - CORS(Cross Origin Resource Sharing)
+    - api 호출 결과 Dictionary에 저장
+    - Dictionary값 (루프 돌면서) 화면에 표시
 
 
 __author : HyunSeongKil__
