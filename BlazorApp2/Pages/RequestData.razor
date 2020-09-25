@@ -1,0 +1,61 @@
+﻿@page "/requestData"
+@using System.Net.Http
+@using System.Net.Http.Headers;
+@inject HttpClient client;
+
+
+<h3>request data</h3>
+
+<ul>
+    @foreach (var item in items)
+    {
+        <li>
+            <span style="color:blue;">@item.Type</span>
+            <span style="margin-right:10px;color:red;">@item.Key</span>
+            <span style="margin-right:10px;color:green;">@item.Value</span>
+            
+        </li>
+    }
+
+</ul>
+
+
+<button @onclick="@GetData">요청</button>
+
+@code {
+
+    //다른 페이지 갔다와도 값 유지하기 위해 static사용
+    //private static IList<ArticleItem> articles = new List<ArticleItem>();
+    private IList<ArticleItem> items = new List<ArticleItem>();
+
+
+
+    /// <summary>
+    /// 데이터 요청
+    /// 참고 : CORS(Cross Origin Resource Sharing)
+    /// </summary>
+    private async void GetData()
+    {
+        Dictionary<string,object> dic = await client.GetFromJsonAsync<Dictionary<string,object>>("https://reqres.in/api/users");
+
+
+        foreach(KeyValuePair<string,object> kvp in dic)
+        {
+            items.Add(new ArticleItem { Key = kvp.Key, Value = kvp.Value.ToString(), Type = kvp.Value.GetType().ToString() });
+        }
+
+        //값이 변경되었으니 화면 다시 렌더링시키기
+        StateHasChanged();
+    }
+
+
+
+
+
+    public class ArticleItem
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+        public string Type { get; set; }
+    }
+}

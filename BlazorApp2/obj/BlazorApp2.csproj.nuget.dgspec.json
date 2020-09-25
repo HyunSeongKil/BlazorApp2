@@ -46,6 +46,10 @@
               "target": "Package",
               "version": "[3.2.1, )"
             },
+            "Microsoft.AspNetCore.Components.WebAssembly.Authentication": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
             "Microsoft.AspNetCore.Components.WebAssembly.Build": {
               "suppressParent": "All",
               "target": "Package",
@@ -56,9 +60,13 @@
               "target": "Package",
               "version": "[3.2.1, )"
             },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "System.Net.Http.Json": {
               "target": "Package",
-              "version": "[3.2.0, )"
+              "version": "[3.2.1, )"
             }
           },
           "imports": [

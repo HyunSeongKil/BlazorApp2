@@ -1,6 +1,10 @@
 ﻿self.assetsManifest = {
   "assets": [
     {
+      "hash": "sha256-pJQvSpzzXNlfQUjYVNgyMVCSbkbhkhhb5UM9Isl25h4=",
+      "url": "_content\/Microsoft.AspNetCore.Components.WebAssembly.Authentication\/AuthenticationService.js"
+    },
+    {
       "hash": "sha256-BHNhq10T\/9aejlrFEhS\/NYeYS3Djwv\/pqg2xUjQCx\/s=",
       "url": "css\/app.css"
     },
@@ -49,7 +53,7 @@
       "url": "css\/open-iconic\/README.md"
     },
     {
-      "hash": "sha256-7LcD6TIUCeHdZ0uq4fyaAf3+QR25z9hui6wg1bC2JPE=",
+      "hash": "sha256-DzhoX1VdzQmgOGR5286ze3Thtf00uzSnsbCMFn1OutA=",
       "url": "debug.log"
     },
     {
@@ -73,11 +77,11 @@
       "url": "sample-data\/weather.json"
     },
     {
-      "hash": "sha256-aa3BO+bdWpBUdMi2U+UvvoosAfp2U+lD2pIAFNSAWAw=",
+      "hash": "sha256-auRifxxx28rpm6jWyx+cN7P3FBVppGHgpo2M1\/Q0n5g=",
       "url": "_framework\/_bin\/BlazorApp2.dll"
     },
     {
-      "hash": "sha256-99dseBOagY3mzu5Y8Eqm8gRI+o8QbbCp7R2Ew9bQ+5E=",
+      "hash": "sha256-WkuXkEV\/\/B1J2kYqjuSPxgHubOHALmA548PhKTed2JE=",
       "url": "_framework\/_bin\/System.Net.Http.Json.dll"
     },
     {
@@ -281,7 +285,7 @@
       "url": "_framework\/_bin\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-DDEWvAJKdewwVOIN+Cw5cQEjICAu3y+yuFgYwQcuQ3g=",
+      "hash": "sha256-b+C3O2VO5MMGG\/q4NUeROUzIWJHdAD5V45kPOBnxBKQ=",
       "url": "_framework\/_bin\/BlazorApp2.pdb"
     },
     {
@@ -301,9 +305,9 @@
       "url": "_framework\/blazor.webassembly.js"
     },
     {
-      "hash": "sha256-hplMoUUBJPDa7ZOFDx9VXYgNUEIokfrDLk6ULBcR7hU=",
+      "hash": "sha256-6mrZpmJzCIiqOyqu3cRc9J9166WRJuwpKYONjOQmcW0=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "RHZXlBPk"
+  "version": "QB7cQLBM"
 };
