@@ -11,10 +11,40 @@
     <link href="manifest.json" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script src="./js/infinite-scroll.js"></script>
     <script>
+        //blazor 참고 정보
+        let dotNetRef = null;
+
         function setFocus(el) {
             el.focus();
         }
+
+        function setDotNetRef(ref) {
+            dotNetRef = ref;
+            console.log('dotNetRef', dotNetRef);
+        }
+
+        $(document).ready(function () {
+            //Infinite scroll
+            $(window).on("scroll", function () {
+                var scrollHeight = $(document).height();
+                var scrollPos = $(window).height() + $(window).scrollTop();
+
+                if ((scrollHeight - scrollPos) / scrollHeight == 0) {
+                    //$('.load-more-days-button').click();
+                    //console.log(scrollHeight, scrollPos);
+
+
+                    //blazor의 메소드 호출
+                    if (null != dotNetRef) {
+                        dotNetRef.invokeMethodAsync("LoadDatas");
+                    }
+                }
+            });
+        })
     </script>
 
 </head>

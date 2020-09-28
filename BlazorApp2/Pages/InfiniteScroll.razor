@@ -1,0 +1,96 @@
+﻿@page "/infinitescroll"
+@inject IJSRuntime JsRuntime;
+
+<!--
+무한 스크롤
+@see https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
+-->
+
+<h3>Todo</h3>
+
+@foreach (Item item in items)
+{
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Card title @item.No</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Card subtitle @item.Title</h6>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
+        </div>
+    </div>
+
+}
+
+@if (IsLoading)
+{
+    <div class="spinner-border" role="status" style="">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
+
+<button type="button" @onclick="LoadDatas">더보기</button>
+
+
+@code {
+    bool IsLoading = false;
+    Random rnd = new Random();
+    IList<Item> items = new List<Item>();
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="firstRender"></param>
+    /// <returns></returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //js 함수를 호출하여 dotnet객체 참고정보를 전달
+            await JsRuntime.InvokeVoidAsync("setDotNetRef", DotNetObjectReference.Create(this));
+
+            //초기 데이터 로드
+            LoadDatas();
+
+            StateHasChanged();
+        }
+    }
+
+
+    /// <summary>
+    /// js가 호출할 수 있는 메소드
+    /// 반드시 public 이어야 함
+    /// 여기서는 데모용으로 랜덤값을 생성했으나, 실제에서는 api를 호출하여 데이터를 생성하게 됨
+    /// </summary>
+    [JSInvokable]
+    public async void LoadDatas()
+    {
+        ShowPinner(true);
+
+        await Task.Delay(1000);
+
+        for (int i=0; i<10; i++)
+        {
+            items.Add(new Item()
+            {
+                No = rnd.Next(),
+                Title = DateTime.Now.ToString()
+            });
+        }
+
+        ShowPinner(false);
+    }
+
+    private void ShowPinner(bool b)
+    {
+        IsLoading = b;
+        StateHasChanged();
+    }
+
+    class Item
+    {
+        public int No { get; set; }
+        public string Title { get; set; }
+    }
+}
