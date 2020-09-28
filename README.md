@@ -8,19 +8,29 @@
 
 ## Todo 페이지
 ### microsoft에서 기본으로 제공하는 Todo sample에 몇가지 기능 추가
-	- 참고 : https://docs.microsoft.com/ko-kr/aspnet/core/tutorials/build-a-blazor-app?view=aspnetcore-3.1
 	- 삭제기능 
 	- js 함수 호출
 	- 값 유지
 	- re-render
 	- js를 이용한 autofocus (js없이 처리하는 방법을 모르겠음 ㅠ)
+	- 참고 : https://docs.microsoft.com/ko-kr/aspnet/core/tutorials/build-a-blazor-app?view=aspnetcore-3.1
 
 ## RequestData 페이지
 ### api 호출 기능
-    - 참고 : https://docs.microsoft.com/ko-kr/aspnet/core/blazor/call-web-api?view=aspnetcore-3.1
     - CORS(Cross Origin Resource Sharing)
     - api 호출 결과 Dictionary에 저장
     - Dictionary값 (루프 돌면서) 화면에 표시
+    - 참고 : https://docs.microsoft.com/ko-kr/aspnet/core/blazor/call-web-api?view=aspnetcore-3.1
+
+## InfiniteScroll 페이지
+### 무한 스크롤
+	- 페이지번호 클릭하는것이 아닌 무한 스크롤
+	- js에서 blazor 메소드 호출하는 방법
+	- blazor에서 js호출하는 방법
+	- js에서 무한 스크롤 처리하는 방법
+	- 참고 : https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
+	- 참고 :https://github.com/wisne/InfiniteScroll-BlazorServer
+
 
 
 __author : HyunSeongKil__
