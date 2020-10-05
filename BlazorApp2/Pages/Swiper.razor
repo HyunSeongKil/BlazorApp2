@@ -4,6 +4,12 @@
 
 
 <style>
+    .swiper-container {
+        width: 800px;
+        height: 300px;
+        margin: 20px auto;
+    }
+
     .swiper-slide {
         text-align: center;
         font-size: 18px;
@@ -21,8 +27,13 @@
         -ms-flex-align: center;
         -webkit-align-items: center;
         align-items: center;
+        width: 600px;
+        margin-right: 10px;
+    }
 
-        margin-top: 10px;
+    .append-buttons {
+        text-align: center;
+        margin-top: 20px;
     }
 </style>
 
@@ -32,27 +43,29 @@
 
 <div class="swiper-container">
     <div class="swiper-wrapper">
-        @foreach (Item item in items)
-        {
-            <div class="swiper-slide">
-                <div>Slide @item.No</div>
-                <div>@item.Text</div>
-            </div>
-        }
+        <!--by js -->
     </div>
 
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>
 </div>
 
-<button @onclick="@AddItem">add item</button>
+
+<!--뒤에 추가-->
+<button @onclick="@((args)=>AddItem(args, true))">append</button>
+<!--앞에 추가-->
+<button @onclick="@((args)=>AddItem(args, false))">prepend</button>
 
 
 
+<!--
+
+
+-->
 @code {
+    //데이터 목록
     IList<Item> items = new List<Item>();
     static int no = 0;
-    Random rnd = new Random();
 
     /// <summary>
     /// 이 페이지 렌더링 후 호출됨
@@ -64,31 +77,96 @@
         //다른 페이지에서 이 페이지로 들어온 처음이면 true. 이 페이지에서 렌더링이 계속된거면 false
         if (firstRender)
         {
+            InitJsSwiper();
+
+            //Task<Item> item = LoadDatas();
+            //AppendItem(item.Result);
         }
     }
 
-    async void AddItem()
+
+    /// <summary>
+    /// swiper 초기화
+    /// </summary>
+    async void InitJsSwiper()
+    {
+        await JsRuntime.InvokeVoidAsync("initSwiper");
+    }
+
+
+    /// <summary>
+    /// rest api를 이용한 데이터 로드
+    /// </summary>
+    /// <returns></returns>
+    async Task<Item> LoadDatas()
     {
         var dic = await hc.GetFromJsonAsync<Dictionary<string, object>>("https://cat-fact.herokuapp.com/facts/random");
-        Console.WriteLine(dic);
 
-        items.Add(new Item()
+        Item item = new Item()
         {
             No = no++,
             Id = dic["_id"].ToString(),
             User = dic["user"].ToString(),
             Text = dic["text"].ToString(),
             CreatedAt = dic["createdAt"].ToString()
-        });
+        };
+
+        Console.WriteLine("<<.LoadDatas ${0}", item);
+        return item;
+
+    }
 
 
+    /// <summary>
+    /// 데이터를 앞에 추가
+    /// </summary>
+    /// <param name="item"></param>
+    async void AppendItem(Item item)
+    {
+        items.Add(item);
 
-        StateHasChanged();
+        //js 함수 호출
+        await JsRuntime.InvokeVoidAsync("appendSwiperItem", System.Text.Json.JsonSerializer.Serialize(item).ToString());
+    }
+
+
+    /// <summary>
+    /// 데이터를 뒤에 추가
+    /// </summary>
+    /// <param name="item"></param>
+    async void PrependItem(Item item)
+    {
+        items.Insert(0, item);
+
+        //js 함수 호출
+        await JsRuntime.InvokeVoidAsync("prependSwiperItem", System.Text.Json.JsonSerializer.Serialize(item).ToString());
+
+    }
+
+
+    /// <summary>
+    /// js버튼 클릭시 호출됨
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="b"></param>
+    async void AddItem(MouseEventArgs e, bool b)
+    {
+        Item item = await LoadDatas();
+        if (b)
+        {
+            AppendItem(item);
+        }
+        else
+        {
+            PrependItem(item);
+        }
+
+        Console.WriteLine("<<.AddItem");
     }
 
 
 
-    class Item
+    public class Item
     {
         public int No { get; set; }
         public string Id { get; set; }

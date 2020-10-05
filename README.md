@@ -40,7 +40,10 @@
 ### 좌/우 스와이프
 	- rest api를 통한 데이터 조회 (참고:https://docs.microsoft.com/ko-kr/aspnet/core/blazor/call-web-api?view=aspnetcore-3.1)
 	- 조회된 데이터를 Dictionary로 변환
-	
+	- 데이터 직렬화(객체=>json)(참고:https://docs.microsoft.com/ko-kr/dotnet/standard/serialization/system-text-json-how-to)
+	- js swiper 라이브러리 사용(참고:https://github.com/nolimits4web/Swiper/blob/master/demos/290-dynamic-slides.html)
+	- 동적으로 swipe 아이템 추가(전,후)	
+	- .NET에서 js로 json 문자열 전달
 
 
 __author : HyunSeongKil__
