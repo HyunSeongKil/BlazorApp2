@@ -11,6 +11,7 @@
     <link href="manifest.json" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
 
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script src="./js/infinite-scroll.js"></script>
@@ -27,7 +28,8 @@
             console.log('dotNetRef', dotNetRef);
         }
 
-        $(document).ready(function () {
+
+    0    $(document).ready(function () {
             //Infinite scroll
             $(window).on("scroll", function () {
                 var scrollHeight = $(document).height();
@@ -44,6 +46,9 @@
                     }
                 }
             });
+
+
+           
         })
     </script>
 
@@ -59,6 +64,7 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+
 </body>
 
 </html>
