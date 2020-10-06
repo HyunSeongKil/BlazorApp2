@@ -51,6 +51,7 @@
 	- EditForm, InputText, InputSelect Component 사용
 	- form submit전 입력값 검사
 	- TODO custom validation
+	- 참고 : https://blazor-university.com/forms/
 
 
 __author : HyunSeongKil__
