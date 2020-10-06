@@ -46,4 +46,11 @@
 	- .NET에서 js로 json 문자열 전달
 
 
+## AddArticle 페이지
+### 글 등록
+	- EditForm, InputText, InputSelect Component 사용
+	- form submit전 입력값 검사
+	- TODO custom validation
+
+
 __author : HyunSeongKil__
