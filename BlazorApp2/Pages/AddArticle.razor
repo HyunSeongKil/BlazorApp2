@@ -1,5 +1,7 @@
 ﻿@page "/add-article"
+@using Models
 @inject HttpClient hc
+@inject NavigationManager navigationManager
 
 <h3>AddArticle</h3>
 
@@ -9,7 +11,7 @@
 
         <div class="mb-3">
             <label for="sj">제목</label>
-            <InputText @bind-Value="article.Sj" class="form-control" id="sj" placeholder="제목" required="" />
+            <InputText   @bind-Value="article.Sj" class="form-control" id="sj" placeholder="제목" required="" />
             <ValidationMessage For="@(()=>article.Sj)"/>
         </div>
 
@@ -172,17 +174,51 @@
 
     IList<DetailCode> categorys = GetDummyCategoryCodes();
 
+
+
+
+    /// <summary>
+    /// input값 검사 통과하지 못하면 호출됨
+    /// </summary>
     void InvalidFormSubmitted()
     {
         Console.WriteLine("invalid form submitted");
     }
 
+
+
+    /// <summary>
+    /// input값 검사 통과하여 호출됨
+    /// </summary>
     void ValidFormSubmitted()
     {
         Console.WriteLine("valid form submitted");
+
+
+        //직렬화시 한글 안 깨지게 하기위해 option 사용
+        //https://blog.naver.com/PostView.nhn?blogId=jskimmail&logNo=221700687117&categoryNo=46&parentCategoryNo=0&viewDate=&currentPage=1&postListTopCurrentPage=1&from=search
+        string jsonString = System.Text.Json.JsonSerializer.Serialize(article, new System.Text.Json.JsonSerializerOptions()
+        {
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            PropertyNamingPolicy = null,
+            WriteIndented = true
+        });
+        System.Diagnostics.Debug.WriteLine(jsonString);
+
+
+        //TODO jsonString을 httpClient를 이용하여 webserver로 전송
+
+
+        //전송 후 다른 페이지로 이동
+        navigationManager.NavigateTo("/swiper");
+
     }
 
 
+    /// <summary>
+    /// dummy 데이터 생성
+    /// </summary>
+    /// <returns></returns>
     static IList<DetailCode> GetDummyCategoryCodes()
     {
         IList<DetailCode> list = new List<DetailCode>();
@@ -207,20 +243,4 @@
     }
 
 
-    class Article
-    {
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Sj { get; set; }
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Cn { get; set; }
-        public string Tag { get; set; }
-        public string CategoryCode { get; set; }
-    }
-
-    class DetailCode
-    {
-        public string DetailCodeId { get; set; }
-        public string DetailCodeNm { get; set; }
-        public string GroupCodeId { get; set; }
-    }
 }
