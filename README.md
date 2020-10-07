@@ -52,6 +52,8 @@
 	- form submit전 입력값 검사
 	- TODO custom validation
 	- 참고 : https://blazor-university.com/forms/
+	- 객체 직렬화(객체 => json string with 한글깨짐방지)
+	- 다른 페이지로 이동
 
 
 __author : HyunSeongKil__
