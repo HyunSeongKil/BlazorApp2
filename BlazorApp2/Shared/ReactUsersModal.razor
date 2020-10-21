@@ -1,0 +1,137 @@
+﻿@using Models;
+@using Utils;
+
+
+<!-- 좋아요/싫어요 누른 사용자 목록 Modal -->
+<div class="modal fade @modalClass" id="likeUsersModal" tabindex="-1" aria-labelledby="likeUsersModalLabel" aria-hidden="true" style="display: @modalDisplay">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="likeUsersModalLabel">
+                    @if (Gbn.Equals("LIKE"))
+                    {
+                        <span>좋아요</span>
+                    }
+                    else
+                    {
+                        <span>싫어요</span>
+                    }
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="()=>Close()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    전체 : @reactUsers.Count
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>사용자</th>
+                            <th>일자</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (CubeReact d in reactUsers)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>
+                                <a href="javascript:;" class="btn-link">
+                                    @d.UserId @d.UserNm
+                                </a>
+                            </td>
+                            <td>@d.RegistDt</td>
+                        </tr>
+                    }
+
+                    @if(0 == reactUsers.Count)
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">데이터가 없습니다.</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="()=>Close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string CubeId { get; set; }
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    [Parameter]
+    public string Gbn { get; set; }
+
+    [Parameter]
+    public BlazorApp2.Pages.TravelCube travelCube { get; set; }
+
+
+    private IList<CubeReact> reactUsers = new List<CubeReact>();
+
+
+
+
+    string modalClass = "";
+    string modalDisplay = "none";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected async override void OnParametersSet()
+    {
+        reactUsers = await GetCubeReactsAsync(UserId, CubeId, "gbn");
+    }
+
+    private async Task<IList<CubeReact>> GetCubeReactsAsync(string userId, string cubeId, string gbn)
+    {
+        await Task.Delay(Util.RndValue(500));
+
+        IList<CubeReact> list = new List<CubeReact>();
+
+        int end = Util.RndValue(10);
+
+        for(int i=0; i<end; i++)
+        {
+            list.Add(new CubeReact()
+            {
+                UserId = "user " + Util.RndValue(100),
+                UserNm = "사용자 " + Util.RndValue(100),
+                RegistDt = DateTime.Now
+            });
+        }
+
+        return list;
+    }
+
+    public void Open()
+    {
+        modalClass = "show";
+        modalDisplay = "block";
+
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        modalClass = "";
+        modalDisplay = "none";
+
+        StateHasChanged();
+    }
+
+
+}

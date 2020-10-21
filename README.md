@@ -46,14 +46,14 @@
 	- .NET에서 js로 json 문자열 전달
 
 
-## AddArticle 페이지
-### 글 등록
-	- EditForm, InputText, InputSelect Component 사용
-	- form submit전 입력값 검사
-	- TODO custom validation
-	- 참고 : https://blazor-university.com/forms/
-	- 객체 직렬화(객체 => json string with 한글깨짐방지)
-	- 다른 페이지로 이동
+## travel cube 페이지
+### 큐브(글) 조회
+	- 전후좌우 이동 가능
+	- 모달창 실행
+	- partial class
+	- component 생성&사용
 
+
+IndexedDB 사용 : https://blog.stevensanderson.com/2019/08/03/blazor-indexeddb/
 
 __author : HyunSeongKil__

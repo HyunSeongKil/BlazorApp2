@@ -17,6 +17,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script src="./js/infinite-scroll.js"></script>
+    <script src="./js/network-graph.js"></script>
+
     <script>
         //blazor 참고 정보
         let dotNetRef = null;
@@ -70,6 +72,9 @@
     <script>navigator.serviceWorker.register('service-worker.js');</script>
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://visjs.github.io/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="./js/pp-0.9-es6.js"></script>
 
     <script>
 
@@ -101,7 +106,7 @@
          */
         function appendSwiperItem(jsonString) {
             let json = JSON.parse(jsonString);
-            
+
             window.swiper.appendSlide(`<div class="swiper-slide">Slide ${json.No}</div>`);
         }
 
@@ -114,6 +119,17 @@
 
             window.swiper.prependSlide(`<div class="swiper-slide">Slide ${json.No}</div>`);
         }
+
+
+        /**
+         * 네트워크 그래프 생성
+         * called by blazor
+         * @param {string} tags
+         */
+        function createVisNetwork(tags) {
+            networkGraphObj.createVisNetwork(tags);
+        }
+
     </script>
 </body>
 

@@ -1,0 +1,181 @@
+﻿@page "/infinite-scroll-and-swiper"
+
+@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JsRuntime
+@inject NavigationManager nm
+
+<h3>Todo</h3>
+
+<style>
+    .swiper-container {
+        width: 800px;
+        height: 300px;
+        margin: 20px auto;
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #efefef;
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+        width: 600px;
+        margin-right: 10px;
+    }
+
+    .append-buttons {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+
+
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        <!--by js -->
+    </div>
+
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
+
+
+
+@foreach (Item item in items)
+{
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Card title @item.No</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Card subtitle @item.Title</h6>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="/infinite-scroll-and-swiper?a=1&b=2" class="card-link">Card link</a>
+            <button type="button" @onclick="(evt)=>SelectArticle(evt, item)">버튼</button>
+        </div>
+    </div>
+
+}
+
+@if (IsLoading)
+{
+    <div class="spinner-border" role="status" style="">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
+
+<button type="button" @onclick="LoadDatas">더보기</button>
+
+
+@code {
+    bool IsLoading = false;
+    Random rnd = new Random();
+    IList<Item> items = new List<Item>();
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="firstRender"></param>
+    /// <returns></returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Uri uri = nm.ToAbsoluteUri(nm.Uri);
+        System.Diagnostics.Debug.WriteLine( System.Web.HttpUtility.ParseQueryString(uri.Query));
+
+        if (firstRender)
+        {
+            //js 함수를 호출하여 dotnet객체 참고정보를 전달
+            await JsRuntime.InvokeVoidAsync("setDotNetRef", DotNetObjectReference.Create(this));
+
+            //초기 데이터 로드
+            LoadDatas();
+
+            StateHasChanged();
+        }
+
+    }
+
+
+    void SelectArticle(MouseEventArgs evt, Item item)
+    {
+        System.Diagnostics.Debug.WriteLine($"item: {item}");
+
+        IList<Item> list = new List<Item>();
+
+        //prev item 삭제
+        for(int i=0; i<items.Count; i++)
+        {
+            if(items[i].No != item.No)
+            {
+                list.Add(items[i]);
+                continue;
+            }
+
+
+            break;
+
+        }
+
+        System.Diagnostics.Debug.WriteLine(list.Count);
+        foreach(Item x in list)
+        {
+            items.Remove(x);
+        }
+
+        StateHasChanged();
+
+        //TODO 스크롤 TOP으로 이동
+
+        //TODO 현재 item은 swiper로 표시 prev3개, 현재1개, next3개 표시
+    }
+
+
+    /// <summary>
+    /// js가 호출할 수 있는 메소드
+    /// 반드시 public 이어야 함
+    /// 여기서는 데모용으로 랜덤값을 생성했으나, 실제에서는 api를 호출하여 데이터를 생성하게 됨
+    /// </summary>
+    [JSInvokable]
+    public async void LoadDatas()
+    {
+        ShowPinner(true);
+
+        await Task.Delay(1000);
+
+        for (int i=0; i<10; i++)
+        {
+            items.Add(new Item()
+            {
+                No = rnd.Next(),
+                Title = DateTime.Now.ToString(),
+                ParentNo = rnd.Next()
+            });
+        }
+
+        ShowPinner(false);
+    }
+
+    private void ShowPinner(bool b)
+    {
+        IsLoading = b;
+        StateHasChanged();
+    }
+
+    class Item
+    {
+        public int No { get; set; }
+        public string Title { get; set; }
+        public int ParentNo { get; set; }
+    }
+}
