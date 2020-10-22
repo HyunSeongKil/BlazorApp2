@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace BlazorApp2.Pages
 {
@@ -19,6 +20,8 @@ namespace BlazorApp2.Pages
         private SirenModal sirenModal { get; set; }
 
         private ReactUsersModal reactUsersModal { get; set; }
+
+        private CommentsModal commentsModal { get; set; }
 
         private Cube prevSiblingCube = null;
         private Cube nextSiblingCube = null;
@@ -170,6 +173,112 @@ namespace BlazorApp2.Pages
             SetCurrentCube(await GetRandomCubeAsync());
         }
 
+        private IList<string> ExtractString(string str, string value)
+        {
+            IList<string> list = new List<string>();
+
+            int startIndex = 0, endIndex;
+
+            while (true)
+            {
+                startIndex = str.ToLower().IndexOf(value, startIndex);
+                if(-1 == startIndex)
+                {
+                    break;
+                }
+                endIndex = str.IndexOf(" ", startIndex);
+
+                if(startIndex == endIndex)
+                {
+                    break;
+                }
+
+                list.Add(str.Substring(startIndex, endIndex-startIndex));
+
+                startIndex = endIndex;
+            }
+
+
+            return list;
+        }
+
+
+        private async Task<string> ParseOgTag(string cn)
+        {
+            IList<string> list = new List<string>();
+
+            ((List<string>)list).AddRange(ExtractString(cn, "http://"));
+            ((List<string>)list).AddRange(ExtractString(cn, "https://"));
+
+            string result = cn;
+
+            foreach(string url in list)
+            {
+                result = result.Replace(url, await OpenGraph(url));
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// webassembly의 보안상 client에서 특정 url을 호출할 수 없음
+        /// OpenGraph를 이용하여 특정 url을 호출할 수 없음
+        /// url을 서버로 파라미터로 전달. 서버단에서 ogtag 처리 후 결과만 리턴받아 여기서 처리하는 로직 필요
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private async Task<string> OpenGraph(string url)
+        {
+            //HttpResponseMessage message = await httpClient.GetAsync("todo server url?url=" + url);
+
+            //요건 테스트용
+            //HttpResponseMessage message = await httpClient.GetAsync("http://code.jquery.com/jquery-3.x-git.js");
+
+            //OGTag ogtag = Util.Deserialize<OGTag>(await message.Content.ReadAsStringAsync());
+            //string s = "";
+            //s += "<div class='container'>";
+            //s += $"<a href='{url}'>";
+            //if(null != ogtag)
+            //{
+            //    Console.WriteLine($"ogtag {ogtag}");
+
+            //    if (!string.IsNullOrEmpty(ogtag.Title))
+            //    {
+            //        s += $"  <div>Title: {ogtag.Title}</div>";
+            //    }
+            //    if (!string.IsNullOrEmpty(ogtag.Description))
+            //    {
+            //        s += $"  <div>Description: {ogtag.Description}</div>";
+            //    }
+            //    if (!string.IsNullOrEmpty(ogtag.Image))
+            //    {
+            //        s += $" <img src='{ogtag.Image}' width='300' height='200'/>";
+            //    }
+            //}
+            //else
+            //{
+            //}
+            //s += url;
+            //s += "</a>";
+            //s += "</div>";
+
+            string s = "";
+            s += "<div class=''>";
+            s += "  <div class='row'>";
+            s += "      <div class='col-1'>";
+            s += "          <img src='http://vaiv.kr/resources/images/vaiv/logo2_re.png'/>";
+            s += "      </div>";
+            s += "      <div class=''>";
+            s += "          <div>테스트 제목</div>";
+            s += "          <div>테스트 설명</div>";
+            s += "      </div>";
+            s += "  </div>";
+            s += $" <a href='{url}'>{url}</a>";
+            s += "</div>";
+
+            return s;
+        }
+
 
         /// <summary>
         /// 현재 큐브 설정
@@ -181,6 +290,9 @@ namespace BlazorApp2.Pages
             StateHasChanged();
 
             currentCube = cube;
+
+            //ogtag 처리
+            currentCube.Cn = await ParseOgTag(currentCube.Cn);
 
             //전후좌우 데이터 미리 조회(비동기)
             Task<Cube> parentCubeTask = GetParentCubeAsync();
@@ -432,7 +544,7 @@ namespace BlazorApp2.Pages
         /// </summary>
         private void PopupCommentList()
         {
-
+            commentsModal.Open(currentCube.CubeId);
         }
 
 
@@ -471,10 +583,11 @@ namespace BlazorApp2.Pages
                 string message = t.Result.Content.ReadAsStringAsync().Result;
 
                 //json문자열을 Class로 변환
-                TrendMapResult result = System.Text.Json.JsonSerializer.Deserialize<TrendMapResult>(message, new System.Text.Json.JsonSerializerOptions()
-                {
-                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
-                });
+                TrendMapResult result = Util.Deserialize<TrendMapResult>(message);
+                //TrendMapResult result = System.Text.Json.JsonSerializer.Deserialize<TrendMapResult>(message, new System.Text.Json.JsonSerializerOptions()
+                //{
+                //    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                //});
                 results.Add(result);
             }
 
