@@ -78,7 +78,7 @@ namespace BlazorApp2.Utils
             {
                 CubeId = CreateUid("C"),
                 Sj = "제목 " + rnd.Next(),
-                Cn = "내용 내용\n 주절 주절\n " + rnd.Next(),
+                Cn = "내용 내용\n 주절 주절\n https://www.nuget.org/ \n http://www.nuget.org/ " + rnd.Next(),
                 CtgryCodeNm = dummyCtgrys[rnd.Next(5)],
                 LikeCo = rnd.Next(100),
                 UnlikeCo = rnd.Next(100),
@@ -92,6 +92,37 @@ namespace BlazorApp2.Utils
 
             //System.Diagnostics.Debug.WriteLine($"i:{no} cube:{cube}");
             return cube;
+        }
+
+
+        public static T Deserialize<T>(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                return default;
+            }
+
+            bool b = false;
+            if (message.Trim().StartsWith("{") && message.Trim().EndsWith("}"))
+            {
+                b = true;
+            }else if (message.Trim().StartsWith("[") && message.Trim().EndsWith("]"))
+            {
+                b = true;
+            }
+
+            if (!b)
+            {
+                return default;
+            }
+
+
+            T result = System.Text.Json.JsonSerializer.Deserialize<T>(message, new System.Text.Json.JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+            });
+
+            return result;
         }
 
 
