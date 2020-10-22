@@ -1,0 +1,132 @@
+﻿@using Models;
+@using Utils;
+
+
+<!-- 콤멘트 목록 Modal -->
+<div class="modal fade @modalClass w-100" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true" style="display: @modalDisplay">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentsModalLabel">
+                    콤멘트
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="()=>Close()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    전체 : @comments.Count
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>내용</th>
+                            <th>사용자</th>
+                            <th>일자</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Comment d in comments)
+                        {
+                        <tr>
+                            <td></td>
+                            <td>@d.Cn</td>
+                            <td>
+                                <a href="javascript:;" class="btn-link">
+                                    @d.UserId @d.UserNm
+                                </a>
+                            </td>
+                            <td>@d.RegistDt</td>
+                        </tr>
+                        }
+
+                        @if (0 == comments.Count)
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">데이터가 없습니다.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="()=>Close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string CubeId { get; set; }
+
+
+    [Parameter]
+    public BlazorApp2.Pages.TravelCube travelCube { get; set; }
+
+
+    private IList<Comment> comments = new List<Comment>();
+
+
+
+
+    string modalClass = "";
+    string modalDisplay = "none";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected async override void OnParametersSet()
+    {
+        comments = await GetCubeReactsAsync(CubeId);
+    }
+
+    private async Task<IList<Comment>> GetCubeReactsAsync(string cubeId)
+    {
+        await Task.Delay(Util.RndValue(500));
+
+        IList<Comment> list = new List<Comment>();
+
+        int end = Util.RndValue(10);
+
+        for (int i = 0; i < end; i++)
+        {
+            list.Add(new Comment()
+            {
+                UserId = "user " + Util.RndValue(100),
+                UserNm = "사용자 " + Util.RndValue(100),
+                Cn = "내용 내용 " + Util.CreateUid(),
+                RegistDt = DateTime.Now
+            });
+        }
+
+        return list;
+    }
+
+    public async void Open(string cubeId)
+    {
+        this.CubeId = cubeId;
+
+        comments = await GetCubeReactsAsync(CubeId);
+
+        modalClass = "show";
+        modalDisplay = "block";
+
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        modalClass = "";
+        modalDisplay = "none";
+
+        StateHasChanged();
+    }
+
+
+}
